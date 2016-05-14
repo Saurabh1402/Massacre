@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/choose_from_gallery"
+        android:icon="@android:drawable/ic_menu_gallery"
+        android:title="Gallery" />
+    <item
+        android:id="@+id/choose_from_camera"
+        android:icon="@android:drawable/ic_menu_camera"
+        android:title="camera"/>
+    <item
+        android:id="@+id/remove_photo"
+        android:icon="@android:drawable/ic_menu_close_clear_cancel"
+        android:title="Remove Photo" />
+</menu>

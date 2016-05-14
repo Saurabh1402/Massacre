@@ -1,0 +1,86 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f8d9d7"
+
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".RegisterFragment"
+        android:orientation="vertical"
+        android:background="#f8d9d7"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/logo"
+            android:src="@drawable/logo"
+            android:backgroundTint="#44444444"
+            android:layout_marginTop="100dp"
+            android:layout_gravity="center_horizontal"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="50dp"
+            android:text="Choose Country Code"
+            android:textColor="#000"
+            android:background="@drawable/abc_spinner_textfield_background_material"
+            android:backgroundTint="#000"
+            android:paddingLeft="20dp"
+            android:paddingRight="40dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
+            >
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/plus_icon"
+                android:tint="#444"
+                android:layout_gravity="center_vertical|center_horizontal"/>
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:hint="Code"
+                android:id="@+id/country_code"
+                android:paddingTop="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp"
+                android:textAlignment="center"
+                android:inputType="number"
+                android:layout_gravity="center_vertical|center_horizontal"/>
+            <EditText
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:paddingTop="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp"
+                android:inputType="number"
+                android:textAlignment="center"
+                android:id="@+id/phone_number"
+                android:hint="Phone Number"/>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
