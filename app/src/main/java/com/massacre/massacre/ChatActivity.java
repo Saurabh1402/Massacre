@@ -78,6 +78,7 @@ public class ChatActivity extends AppCompatActivity {
                 if(message!=null && !message.equals("")){
                     //String senderPhoneNumber=SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.COUNTRY_CODE,"")+SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.PHONE_NUMBER,"");
                     chatDbHelper.insertMessage(message,userProfile.getContact(),new Date(),ChatDbHelper.PENDING_MESSAGE,ChatDbHelper.TEXT_MESSAGE);
+                    messageField.setText("");
                     new AsyncTask<Void,Void,Void>(){
                         @Override
                         protected Void doInBackground(Void... voids) {
