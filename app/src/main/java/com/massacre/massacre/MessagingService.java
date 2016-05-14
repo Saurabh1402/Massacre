@@ -54,7 +54,11 @@ public class MessagingService extends Service {
                 String messageRecipient= cursor.getString(cursor.getColumnIndex(cols[2]));
                 String messageDate=cursor.getString(cursor.getColumnIndex(cols[3]));
                 int messageType=cursor.getInt(cursor.getColumnIndex(cols[5]));
-                String senderPhoneNumber=SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.COUNTRY_CODE,"")+SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.PHONE_NUMBER,"");
+                String senderPhoneNumber=
+                        SaveFile.getDataFromSharedPreference(getBaseContext(),
+                        MyApplication.COUNTRY_CODE,"")+
+                        SaveFile.getDataFromSharedPreference(getBaseContext(),
+                        MyApplication.PHONE_NUMBER,"");
 
 //                Log.e("SAURABH",+"");
 //                Log.e("SAURABH",);
@@ -69,7 +73,8 @@ public class MessagingService extends Service {
 
         return START_STICKY;
     }
-    public void sendMessage(final int messageId, final ChatDbHelper db, String contentTitle, String contentText, String tickerText, final String message, final String messageRecipient, final int messageType){
+    public void sendMessage(final int messageId, final ChatDbHelper db, String contentTitle, String contentText,
+                            String tickerText, final String message, final String messageRecipient, final int messageType){
         String recipientDeviceId=MyApplication.getDeviceId(getBaseContext(),messageRecipient);
         final Date date=new Date();
         DeliveryOptions deliveroption = new DeliveryOptions();
@@ -91,14 +96,14 @@ public class MessagingService extends Service {
 
             @Override
             public void handleResponse(MessageStatus messageStatus) {
-                Log.e("SAURABH",messageStatus.toString());
+//                Log.e("SAURABH",messageStatus.toString());
                 db.updateMessage(messageId,message,messageRecipient,date,ChatDbHelper.SEND_MESSAGE,messageType);
             }
 
             @Override
             public void handleFault(BackendlessFault backendlessFault) {
-                Log.e("SAURABH",backendlessFault.getMessage());
-
+//                Log.e("SAURABH",backendlessFault.getMessage());
+                
             }
         });
 

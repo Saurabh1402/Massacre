@@ -5,4 +5,5 @@
     <string name="title_activity_contact">ContactActivity</string>
     <string name="title_activity_username">UsernameActivity</string>
     <string name="title_activity_chat">ChatActivity</string>
+    <string name="last_seen">last seen</string>
 </resources>

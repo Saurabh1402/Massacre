@@ -46,6 +46,7 @@ public class ChatActivity extends AppCompatActivity {
             String contactName=SaveFile.getDataFromSharedPreference(getBaseContext(), userProfile.getContact(), "");
 //          Log.e("SAURABH","NAME:  "+contactName);
             LinearLayout ll=(LinearLayout)toolbar.findViewById(R.id.back_button_chat_activity);
+            if(ll!=null)
             ll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -54,7 +55,7 @@ public class ChatActivity extends AppCompatActivity {
             });
             ((TextView)toolbar.findViewById(R.id.name_activty_chat)).setText(contactName);
             Bitmap arrow_Back=BitmapFactory.decodeResource(getResources(),R.drawable.ic_arrow_back_black_48dp);
-            ((TextView)toolbar.findViewById(R.id.last_seen_activity_chat)).setText("last seen "+ MyApplication.changeDateFormat(userProfile.getLast_seen()));
+            ((TextView)toolbar.findViewById(R.id.last_seen_activity_chat)).setText(getResources().getText(R.string.last_seen)+ MyApplication.changeDateFormat(userProfile.getLast_seen()));
             CircleImageView circleImageView=(CircleImageView)toolbar.findViewById(R.id.chat_profile_pic);
             String pathName=MyApplication.getExternalAPPFolder()+"/"+MyApplication.getThumbnailFriendsProfileFolder(getBaseContext())+"/";
             String fileName=userProfile.getContact()+".jpg";
@@ -75,7 +76,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String message=messageField.getText().toString();
                 if(message!=null && !message.equals("")){
-                    String senderPhoneNumber=SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.COUNTRY_CODE,"")+SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.PHONE_NUMBER,"");
+                    //String senderPhoneNumber=SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.COUNTRY_CODE,"")+SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.PHONE_NUMBER,"");
                     chatDbHelper.insertMessage(message,userProfile.getContact(),new Date(),ChatDbHelper.PENDING_MESSAGE,ChatDbHelper.TEXT_MESSAGE);
                     new AsyncTask<Void,Void,Void>(){
                         @Override

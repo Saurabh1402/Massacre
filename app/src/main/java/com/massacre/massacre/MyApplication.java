@@ -97,7 +97,7 @@ public class MyApplication{
                 Iterator<UserProfile> it=userProfiles.iterator();
                 do{
                     UserProfile userProfile=it.next();
-                    Log.e("SAURABH",userProfile.getContact());
+//                    Log.e("SAURABH",userProfile.getContact());
                     if(userProfile.getContact().equals(phoneNumber))
                         return userProfile.getDevice_id();
                 }while (it.hasNext());
