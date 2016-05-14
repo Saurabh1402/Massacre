@@ -49,21 +49,31 @@ public class MessagingService extends Service {
         cursor.moveToFirst();
         if(cursor.getCount()!=0)
             do{
-                Log.e("SAURABH",cursor.getString(cursor.getColumnIndex(cols[0])));
-                Log.e("SAURABH",cursor.getString(cursor.getColumnIndex(cols[1])));
-                Log.e("SAURABH",cursor.getString(cursor.getColumnIndex(cols[2])));
-                Log.e("SAURABH",cursor.getString(cursor.getColumnIndex(cols[3])));
-                Log.e("SAURABH",cursor.getString(cursor.getColumnIndex(cols[4])));
-                Log.e("SAURABH",cursor.getString(cursor.getColumnIndex(cols[5])));
+                int messageId=cursor.getInt(cursor.getColumnIndex(cols[0]));
+                String messageText=cursor.getString(cursor.getColumnIndex(cols[1]));
+                String messageRecipient= cursor.getString(cursor.getColumnIndex(cols[2]));
+                String messageDate=cursor.getString(cursor.getColumnIndex(cols[3]));
+                int messageType=cursor.getInt(cursor.getColumnIndex(cols[5]));
+                String senderPhoneNumber=SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.COUNTRY_CODE,"")+SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.PHONE_NUMBER,"");
+
+//                Log.e("SAURABH",+"");
+//                Log.e("SAURABH",);
+//                Log.e("SAURABH",cursor.getString(cursor.getColumnIndex(cols[2])));
+//                Log.e("SAURABH",cursor.getString(cursor.getColumnIndex(cols[3])));
+//                Log.e("SAURABH",cursor.getInt(cursor.getColumnIndex(cols[4]))+"");
+//                Log.e("SAURABH",cursor.getInt(cursor.getColumnIndex(cols[5]))+"");
+                sendMessage(messageId,db,senderPhoneNumber,"","",messageText,messageRecipient,messageType);
                 cursor.moveToNext();
             }while(!cursor.isAfterLast());
 
 
         return START_STICKY;
     }
-    public void sendMessage(final ChatDbHelper db,String contentTitle,String contentText,String tickerText,String message,String recipientDeviceId){
+    public void sendMessage(final int messageId, final ChatDbHelper db, String contentTitle, String contentText, String tickerText, final String message, final String messageRecipient, final int messageType){
+        String recipientDeviceId=MyApplication.getDeviceId(getBaseContext(),messageRecipient);
+        final Date date=new Date();
         DeliveryOptions deliveroption = new DeliveryOptions();
-        deliveroption.setPushPolicy(PushPolicyEnum.ONLY);
+        Log.e("SAURABH",recipientDeviceId+ "   sfsdfsd");
         deliveroption.addPushSinglecast(recipientDeviceId);//9936851c  f89ade4b
 
         PublishOptions publishOptions = new PublishOptions();
@@ -73,17 +83,16 @@ public class MessagingService extends Service {
 
         com.massacre.massacre.Message messageObject=new com.massacre.massacre.Message();
         messageObject.setMessage(message);
-        String senderPhoneNumber=SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.COUNTRY_CODE,"")+SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.PHONE_NUMBER,"");
-        messageObject.setRecipient(senderPhoneNumber);
+        messageObject.setRecipient(contentTitle);
         messageObject.setTime(new Date());
-        messageObject.setType(1);
-        message=new Gson().toJson(messageObject);
-        Backendless.Messaging.publish(message, publishOptions, deliveroption,new AsyncCallback<MessageStatus>(){
+        messageObject.setType(messageType);
+        String messageObjectString=new Gson().toJson(messageObject);
+        Backendless.Messaging.publish(messageObjectString, publishOptions, deliveroption,new AsyncCallback<MessageStatus>(){
 
             @Override
             public void handleResponse(MessageStatus messageStatus) {
                 Log.e("SAURABH",messageStatus.toString());
-                //db.updateMessage()
+                db.updateMessage(messageId,message,messageRecipient,date,ChatDbHelper.SEND_MESSAGE,messageType);
             }
 
             @Override

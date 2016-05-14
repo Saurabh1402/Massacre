@@ -7,20 +7,24 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 import com.backendless.Backendless;
+import com.google.gson.Gson;
 
 import java.net.InetAddress;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 
 /**
  * Created by saurabh on 11/4/16.
  */
-public class MyApplication extends Application{
+public class MyApplication{
     public static final String SHARED_PREFERENCE_NAME="Massacre";
     public static final String USERNAME="USERNAME";
     public static final String COUNTRY_CODE="CountryCode";
@@ -43,17 +47,6 @@ public class MyApplication extends Application{
     public static final String PROFILE_PICTURE_FOLDER_BACKENDLESS="ProfilePicture";
     public static final String THUMBNAIL_PICTURE_FOLDER_BACKENDLESS="ProfilePicture/thumbnail";
 
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-        Log.e("SAURABH","Terminated");
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-        Log.e("SAURABH","Finalized");
-    }
 
     public static String getInternalAPPFolder(Context context){
         return context.getFilesDir()+"/Massacre";
@@ -94,6 +87,23 @@ public class MyApplication extends Application{
         String format="dd MMM, h:mm a";
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat(format);
         return simpleDateFormat.format(date);
+    }
+    public static String getDeviceId(Context context,String phoneNumber){
+        String allFriendString=SaveFile.getDataFromSharedPreference(context,MyApplication.ALL_FRIENDS_OBJECT,"");
+        if(!allFriendString.equals("")){
+            Wrapper wrapper=new Gson().fromJson(allFriendString,Wrapper.class);
+            if(wrapper!=null && wrapper.userProfiles!=null){
+            ArrayList<UserProfile> userProfiles=wrapper.userProfiles;
+                Iterator<UserProfile> it=userProfiles.iterator();
+                do{
+                    UserProfile userProfile=it.next();
+                    Log.e("SAURABH",userProfile.getContact());
+                    if(userProfile.getContact().equals(phoneNumber))
+                        return userProfile.getDevice_id();
+                }while (it.hasNext());
+            }
+        }
+        return null;
     }
 
 }

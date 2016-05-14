@@ -75,15 +75,15 @@ public class ShowNotification extends IntentService{
         }
 //        Log.e("Saurabh",chatDbHelper.deleteMessageofPhone(messageObject.getRecipient()).intValue()+"");
         Cursor cursor=chatDbHelper.getAllMessage();
-        Log.e("Saurabh",cursor.getCount()+" column count");
-        String[] cols=new String[]{
-                ChatDbHelper.MESSAGE_COLUMN_ID,
-                ChatDbHelper.MESSAGE_COLUMN_MESSAGE,
-                ChatDbHelper.MESSAGE_COLUMN_RECIPIENT,
-                ChatDbHelper.MESSAGE_COLUMN_DATE,
-                ChatDbHelper.MESSAGE_COLUMN_SEND_OR_RECEIVED,
-                ChatDbHelper.MESSAGE_COLUMN_TYPE
-        };
+//          Log.e("Saurabh",cursor.getCount()+" column count");
+//        String[] cols=new String[]{
+//                ChatDbHelper.MESSAGE_COLUMN_ID,
+//                ChatDbHelper.MESSAGE_COLUMN_MESSAGE,
+//                ChatDbHelper.MESSAGE_COLUMN_RECIPIENT,
+//                ChatDbHelper.MESSAGE_COLUMN_DATE,
+//                ChatDbHelper.MESSAGE_COLUMN_SEND_OR_RECEIVED,
+//                ChatDbHelper.MESSAGE_COLUMN_TYPE
+//        };
         /*cursor.moveToFirst();
         if(cursor.getCount()!=0)
             do{
