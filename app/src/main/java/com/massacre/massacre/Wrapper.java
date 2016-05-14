@@ -7,7 +7,6 @@ import java.util.ArrayList;
  */
 public class Wrapper {
     ArrayList<UserProfile> userProfiles =null;
-    //saurabh
     public Wrapper(ArrayList<UserProfile> value){
         this.userProfiles =value;
     }
