@@ -36,6 +36,7 @@ public class MessagingService extends Service {
                 MyApplication.APPLICATION_VERSION_BACKENDLESS
         );
         ChatDbHelper db=new ChatDbHelper(this);
+
         Cursor cursor=db.getPendingMessages();
         Log.e("Saurabh",cursor.getCount()+" column count");
         String[] cols=new String[]{
@@ -73,7 +74,7 @@ public class MessagingService extends Service {
 
         return START_STICKY;
     }
-    public void sendMessage(final int messageId, final ChatDbHelper db, String contentTitle, String contentText,
+    public synchronized void sendMessage(final int messageId, final ChatDbHelper db, String contentTitle, String contentText,
                             String tickerText, final String message, final String messageRecipient, final int messageType){
         String recipientDeviceId=MyApplication.getDeviceId(getBaseContext(),messageRecipient);
         final Date date=new Date();
@@ -91,6 +92,7 @@ public class MessagingService extends Service {
         messageObject.setRecipient(contentTitle);
         messageObject.setTime(new Date());
         messageObject.setType(messageType);
+        messageObject.setSendOrReceived(ChatDbHelper.PENDING_MESSAGE);
         String messageObjectString=new Gson().toJson(messageObject);
         Backendless.Messaging.publish(messageObjectString, publishOptions, deliveroption,new AsyncCallback<MessageStatus>(){
 

@@ -64,18 +64,18 @@ public class ShowNotification extends IntentService{
         long timeStamp= calendar.getTimeInMillis();
         String recipient=messageObject.getRecipient();
         int messageType=messageObject.getType();
-
+        int messageSendorReceived=ChatDbHelper.RECEIVED_MESSAGE;
         // ID, MESSAGE, RECIPIENT, DATE, SEND OR RECEIVED, TYPE
         //type  ===>>    1=> text ,,2=> photo 3=>video 4=>audio
         //Send or received  ====>>>   send =1 and recieved = 2 pending =>3 downloaded=3(in case of audio video and pic)
 
         ChatDbHelper chatDbHelper=new ChatDbHelper(this);
-        if(chatDbHelper.insertMessage(message,recipient,messageObject.getTime(),ChatDbHelper.RECEIVED_MESSAGE,messageType)){
+        if(chatDbHelper.insertMessage(message,recipient,messageObject.getTime(),messageSendorReceived,messageType)){
             //Log.e("SAURABH",true+" inserted");
         }
 //        Log.e("Saurabh",chatDbHelper.deleteMessageofPhone(messageObject.getRecipient()).intValue()+"");
         Cursor cursor=chatDbHelper.getAllMessage();
-//          Log.e("Saurabh",cursor.getCount()+" column count");
+          Log.e("Saurabh",cursor.getCount()+" column count");
 //        String[] cols=new String[]{
 //                ChatDbHelper.MESSAGE_COLUMN_ID,
 //                ChatDbHelper.MESSAGE_COLUMN_MESSAGE,

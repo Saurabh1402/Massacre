@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#aaa"
+    android:paddingBottom="5dp"
+    android:paddingTop="5dp"
+    >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/received_message_background_styling_xml"
+        android:padding="16dp"
+        android:orientation="vertical"
+        android:elevation="5dp"
+        android:layout_marginRight="50dp"
+        android:layout_alignParentTop="true"
+        android:backgroundTint="@color/received_message_background"
+        android:layout_toEndOf="@+id/image_triangle">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kya chal raha"
+            android:id="@+id/received_message_container_message"
+            android:textColor="@color/received_message_text_color"
+            android:textSize="@dimen/message_text_size"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10:20 pm"
+            android:textSize="@dimen/time_text_size"
+            android:textColor="@color/time_text_color"
+            android:id="@+id/received_message_container_time"
+            android:layout_gravity="end"/>
+
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/image_triangle"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/triangle"
+        android:rotation="90"
+        android:tint="@color/received_message_background"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"/>
+</RelativeLayout>

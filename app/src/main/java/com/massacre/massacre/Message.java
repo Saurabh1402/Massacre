@@ -11,6 +11,7 @@ public class Message {
     public String recipient;
     public int type;
     public String message;
+    public int sendOrReceived;
 
     public String getMessage() {
         return message;
@@ -45,4 +46,11 @@ public class Message {
         this.time = time;
     }
 
-}
+
+    public int getSendOrReceived() {
+        return sendOrReceived;
+    }
+
+    public void setSendOrReceived(int sendOrReceived) {
+        this.sendOrReceived = sendOrReceived;
+    }}

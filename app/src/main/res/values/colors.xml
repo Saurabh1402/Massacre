@@ -5,4 +5,9 @@
     <color name="colorAccent">#3331C3</color>
     <color name="white">#fff</color>
     <color name="black">#000</color>
+    <color name="send_message_background">#c4c4fd</color>
+    <color name="send_message_text_color">#1e1e64</color>
+    <color name="received_message_background">#F5C699</color>
+    <color name="received_message_text_color">#6b3c0e</color>
+    <color name="time_text_color">#666</color>
 </resources>
