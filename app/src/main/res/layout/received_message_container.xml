@@ -45,4 +45,9 @@
         android:tint="@color/received_message_background"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"/>
+    <TextView
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:id="@+id/received_messageId_text_view"
+        android:visibility="gone"/>
 </RelativeLayout>

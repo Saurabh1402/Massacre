@@ -2,6 +2,7 @@ package com.massacre.massacre;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,13 +46,15 @@ public class ChatMessageHolderAdapter extends RecyclerView.Adapter<ChatMessageHo
             holder.messageTv.setText(message.getMessage());
             String time=MyApplication.changeDateFormat(message.getTime());
             holder.dateTv.setText(time);
+            Log.e("SAURABH","messageId: "+message.getMessageId());
+            //holder.messageIdTv.setText(message.getMessageId());
             if(message.getSendOrReceived()==ChatDbHelper.SEND_MESSAGE)
                 holder.pendingOrSendIv.setImageResource(R.drawable.ic_done_black_36dp);
             else if(message.getSendOrReceived()==ChatDbHelper.PENDING_MESSAGE)
                 holder.pendingOrSendIv.setImageResource(R.drawable.ic_hourglass_empty_black_36dp);
 
         }
-        if (holder.holderId==TYPE_MESSAGE_RECEIVED){
+        else if (holder.holderId==TYPE_MESSAGE_RECEIVED){
             Message message=messageList.get(position);
             holder.messageTv.setText(message.getMessage());
             String time=MyApplication.changeDateFormat(message.getTime());
@@ -63,6 +66,7 @@ public class ChatMessageHolderAdapter extends RecyclerView.Adapter<ChatMessageHo
         public int holderId;
         public TextView messageTv;
         public TextView dateTv;
+        public TextView messageIdTv;
         public ImageView pendingOrSendIv;
         public ChatHolder( View itemView, int viewType,Context context){
             super(itemView);
@@ -71,10 +75,12 @@ public class ChatMessageHolderAdapter extends RecyclerView.Adapter<ChatMessageHo
                 messageTv=(TextView)itemView.findViewById(R.id.send_message_container_message);
                 dateTv=(TextView)itemView.findViewById(R.id.send_message_container_time);
                 pendingOrSendIv=(ImageView)itemView.findViewById(R.id.pending_or_sent_imageView);
+                messageIdTv=(TextView)itemView.findViewById(R.id.send_messageId_text_view);
             }else if(viewType==TYPE_MESSAGE_RECEIVED){
                 holderId=viewType;
                 messageTv=(TextView)itemView.findViewById(R.id.received_message_container_message);
                 dateTv=(TextView)itemView.findViewById(R.id.received_message_container_time);
+                messageIdTv=(TextView)itemView.findViewById(R.id.received_messageId_text_view);
             }
 
         }

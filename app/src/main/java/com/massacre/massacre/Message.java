@@ -12,6 +12,7 @@ public class Message {
     public int type;
     public String message;
     public int sendOrReceived;
+    public int messageId;
 
     public String getMessage() {
         return message;
@@ -53,4 +54,13 @@ public class Message {
 
     public void setSendOrReceived(int sendOrReceived) {
         this.sendOrReceived = sendOrReceived;
-    }}
+    }
+
+    public int getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(int messageId) {
+        this.messageId = messageId;
+    }
+}

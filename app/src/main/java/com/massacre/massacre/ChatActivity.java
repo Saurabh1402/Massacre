@@ -15,6 +15,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DrawableUtils;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -26,10 +27,14 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -105,13 +110,53 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-          Cursor cursor = chatDbHelper.getMessageofPhone(userProfile.getContact());
-        if(!cursor.moveToFirst()){
-
-        }else {
+        Cursor cursor = chatDbHelper.getMessageofPhone(userProfile.getContact());
+        String[] cols=new String[]{
+                ChatDbHelper.MESSAGE_COLUMN_ID,
+                ChatDbHelper.MESSAGE_COLUMN_MESSAGE,
+                ChatDbHelper.MESSAGE_COLUMN_RECIPIENT,
+                ChatDbHelper.MESSAGE_COLUMN_DATE,
+                ChatDbHelper.MESSAGE_COLUMN_SEND_OR_RECEIVED,
+                ChatDbHelper.MESSAGE_COLUMN_TYPE
+        };
+        cursor.moveToFirst();
+        messageList=new ArrayList<Message>();
+        if(cursor.getCount()!=0)
+        {
+          do{
+              int messageId=cursor.getInt(cursor.getColumnIndex(cols[0]));
+              String messageText=cursor.getString(cursor.getColumnIndex(cols[1]));
+              String messageRecipient= cursor.getString(cursor.getColumnIndex(cols[2]));
+              String messageDate=cursor.getString(cursor.getColumnIndex(cols[3]));
+              int sendOrReceived=cursor.getInt(cursor.getColumnIndex(cols[4]));
+              int messageType=cursor.getInt(cursor.getColumnIndex(cols[5]));
+              Date date=new Date();
+              Log.e("SAURABH",messageDate+"  "+ messageId);
+              SimpleDateFormat dateFormat = new SimpleDateFormat(
+                      "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+              try {
+                  date=dateFormat.parse(messageDate);
+              } catch (ParseException e) {
+                  e.printStackTrace();
+              }
+              Log.e("SAURABH",messageDate);
+              Message message=new Message();
+              message.setSendOrReceived(sendOrReceived);
+              message.setRecipient(messageRecipient);
+              message.setMessageId(messageId);
+              message.setMessage(messageText);
+              message.setType(messageType);
+              message.setTime(date);
+              messageList.add(message);
+          }while(cursor.isAfterLast());
 
         }
-//        adapter=new ChatMessageHolderAdapter(getBaseContext(),)
+
+        adapter=new ChatMessageHolderAdapter(getBaseContext(),messageList);
+        RecyclerView recyclerView=(RecyclerView)findViewById(R.id.chat_message_recycler_view);
+        recyclerView.setAdapter(adapter);
+        LinearLayoutManager ll=new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(ll);
 
     }
 

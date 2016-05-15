@@ -53,4 +53,11 @@
         android:tint="@color/send_message_background"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"/>
+
+    <TextView
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:visibility="gone"
+        android:id="@+id/send_messageId_text_view"
+        />
 </RelativeLayout>
