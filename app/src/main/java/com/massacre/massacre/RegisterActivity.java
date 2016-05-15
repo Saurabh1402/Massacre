@@ -41,6 +41,8 @@ public class RegisterActivity extends AppCompatActivity {
                     long interval = 60*60*1000;//milliseconds
                     alarm.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(),interval, pending);
 
+
+
             Intent intent=new Intent(RegisterActivity.this,ProfileActivity.class);
             startActivity(intent);
             finish();

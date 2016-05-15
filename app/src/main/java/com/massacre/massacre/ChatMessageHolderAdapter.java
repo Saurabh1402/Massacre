@@ -46,7 +46,7 @@ public class ChatMessageHolderAdapter extends RecyclerView.Adapter<ChatMessageHo
             holder.messageTv.setText(message.getMessage());
             String time=MyApplication.changeDateFormat(message.getTime());
             holder.dateTv.setText(time);
-            Log.e("SAURABH","messageId: "+message.getMessageId());
+            //Log.e("SAURABH","messageId: "+message.getMessageId());
             //holder.messageIdTv.setText(message.getMessageId());
             if(message.getSendOrReceived()==ChatDbHelper.SEND_MESSAGE)
                 holder.pendingOrSendIv.setImageResource(R.drawable.ic_done_black_36dp);
@@ -87,15 +87,20 @@ public class ChatMessageHolderAdapter extends RecyclerView.Adapter<ChatMessageHo
     }
     @Override
     public int getItemCount() {
+
+//        Log.e("SAURABH",messageList.size()+" items");
         return messageList.size();
+
     }
 
     @Override
     public int getItemViewType(int position) {
         Message message=messageList.get(position);
         if(message.getSendOrReceived()==ChatDbHelper.PENDING_MESSAGE|| message.getSendOrReceived()==ChatDbHelper.SEND_MESSAGE){
+            //Log.e("SAURABH","RIGHT");
             return TYPE_MESSAGE_SEND;
         }else if(message.getSendOrReceived()==ChatDbHelper.RECEIVED_MESSAGE|| message.getSendOrReceived()==ChatDbHelper.READ_MESSAGE){
+            //Log.e("SAURABH","Left");
             return TYPE_MESSAGE_RECEIVED;
         }
         return TYPE_MESSAGE_SEND;

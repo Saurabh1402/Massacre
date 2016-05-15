@@ -149,10 +149,9 @@ public class ContactActivity extends AppCompatActivity {
                     TextView userProfileTv=(TextView)view.findViewById(R.id.user_profile);
                     //UserProfile userProfile=new Gson().fromJson(userProfileTv.getText().toString(),UserProfile.class);
                     Intent intent=new Intent(getBaseContext(),ChatActivity.class);
-                    Log.e("SAURABH",userProfileTv.getText().toString());
+//                    Log.e("SAURABH",userProfileTv.getText().toString());
                     intent.putExtra(ChatActivity.USER_PROFILE,userProfileTv.getText());
                     startActivity(intent);
-
                     return true;
                 }
                 return false;

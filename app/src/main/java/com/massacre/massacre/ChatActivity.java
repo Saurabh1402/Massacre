@@ -70,7 +70,7 @@ public class ChatActivity extends AppCompatActivity {
             CircleImageView circleImageView=(CircleImageView)toolbar.findViewById(R.id.chat_profile_pic);
             String pathName=MyApplication.getExternalAPPFolder()+"/"+MyApplication.getThumbnailFriendsProfileFolder(getBaseContext())+"/";
             String fileName=userProfile.getContact()+".jpg";
-            Log.e("SAURABH",pathName+fileName);
+//            Log.e("SAURABH",pathName+fileName);
             Bitmap bitmap=BitmapFactory.decodeFile(pathName+fileName);
             if(bitmap==null)
                 bitmap=BitmapFactory.decodeResource(getResources(),R.drawable.ic_account_circle_white_48dp);
@@ -81,17 +81,6 @@ public class ChatActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-        new AsyncTask<Void,Void,Void>(){
-            @Override
-            protected Void doInBackground(Void... voids) {
-                final Intent messagingService = new Intent(getBaseContext(), MessagingService.class);
-                final PendingIntent pending = PendingIntent.getService(getBaseContext(), 0,messagingService , 0);
-                final AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                alarm.cancel(pending);
-                long interval = 2*1000;//milliseconds
-                alarm.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(),interval, pending);return null;
-            }
-        }.execute();
 
 
         final ChatDbHelper chatDbHelper=new ChatDbHelper(this);
@@ -100,16 +89,30 @@ public class ChatActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String message=messageField.getText().toString();
+                final String message=messageField.getText().toString();
                 if(message!=null && !message.equals("")){
                     //String senderPhoneNumber=SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.COUNTRY_CODE,"")+SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.PHONE_NUMBER,"");
                     chatDbHelper.insertMessage(message,userProfile.getContact(),new Date(),ChatDbHelper.PENDING_MESSAGE,ChatDbHelper.TEXT_MESSAGE);
                     messageField.setText("");
 
+
+
                 }
             }
         });
-
+        new AsyncTask<Void,Void,Void>(){
+            @Override
+            protected Void doInBackground(Void... voids) {
+                final Intent messagingService = new Intent(getBaseContext(), MessagingService.class);
+                //startService(messagingService);
+                final PendingIntent pending = PendingIntent.getService(getBaseContext(), 0,messagingService , 0);
+                final AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                alarm.cancel(pending);
+                long interval = 15*1000;//milliseconds
+                alarm.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(),interval, pending);
+                return null;
+            }
+        }.execute();
         Cursor cursor = chatDbHelper.getMessageofPhone(userProfile.getContact());
         String[] cols=new String[]{
                 ChatDbHelper.MESSAGE_COLUMN_ID,
@@ -131,7 +134,7 @@ public class ChatActivity extends AppCompatActivity {
               int sendOrReceived=cursor.getInt(cursor.getColumnIndex(cols[4]));
               int messageType=cursor.getInt(cursor.getColumnIndex(cols[5]));
               Date date=new Date();
-              Log.e("SAURABH",messageDate+"  "+ messageId);
+//              Log.e("SAURABH",messageDate+"  "+ messageId);
               SimpleDateFormat dateFormat = new SimpleDateFormat(
                       "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
               try {
@@ -139,7 +142,7 @@ public class ChatActivity extends AppCompatActivity {
               } catch (ParseException e) {
                   e.printStackTrace();
               }
-              Log.e("SAURABH",messageDate);
+//              Log.e("SAURABH",messageDate);
               Message message=new Message();
               message.setSendOrReceived(sendOrReceived);
               message.setRecipient(messageRecipient);
@@ -147,8 +150,10 @@ public class ChatActivity extends AppCompatActivity {
               message.setMessage(messageText);
               message.setType(messageType);
               message.setTime(date);
+              //Log.e("SAURABH", "id:"+messageId+", message:"+messageText);
               messageList.add(message);
-          }while(cursor.isAfterLast());
+              cursor.moveToNext();
+          }while(!cursor.isAfterLast());
 
         }
 
