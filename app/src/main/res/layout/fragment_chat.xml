@@ -7,10 +7,11 @@
     tools:showIn="@layout/activity_chat">
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="72dp">
     <android.support.v7.widget.RecyclerView
     android:layout_width="match_parent"
-        android:layout_height="170dp"
+        android:layout_height="match_parent"
         android:layout_marginBottom="70dp"
         android:id="@+id/chat_message_recycler_view">
     </android.support.v7.widget.RecyclerView>

@@ -11,29 +11,22 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DrawableUtils;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -91,6 +84,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View view) {
                 final String message=messageField.getText().toString();
                 if(message!=null && !message.equals("")){
+                    Log.e("MESSAGE",message);
                     //String senderPhoneNumber=SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.COUNTRY_CODE,"")+SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.PHONE_NUMBER,"");
                     chatDbHelper.insertMessage(message,userProfile.getContact(),new Date(),ChatDbHelper.PENDING_MESSAGE,ChatDbHelper.TEXT_MESSAGE);
                     messageField.setText("");
@@ -108,7 +102,7 @@ public class ChatActivity extends AppCompatActivity {
                 final PendingIntent pending = PendingIntent.getService(getBaseContext(), 0,messagingService , 0);
                 final AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                 alarm.cancel(pending);
-                long interval = 15*1000;//milliseconds
+                long interval = 2*1000;//milliseconds
                 alarm.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(),interval, pending);
                 return null;
             }

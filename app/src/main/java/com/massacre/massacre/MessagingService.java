@@ -63,6 +63,7 @@ public class MessagingService extends Service {
 //            };
 //        t.start();
 
+
                         ChatDbHelper db = new ChatDbHelper(MessagingService.this);
                         Cursor cursor = db.getPendingMessages();
 
