@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateFormat;
 import android.util.Log;
 
@@ -58,46 +59,35 @@ public class ShowNotification extends IntentService{
 
         com.massacre.massacre.Message messageObject= new Gson().fromJson(messageObjectString,Message.class);
         String message=messageObject.message;
-
         Calendar calendar=new GregorianCalendar();
         calendar.setTime(messageObject.getTime());
-        long timeStamp= calendar.getTimeInMillis();
+        long timeStamp= calendar.getTimeInMillis();//timestamp used for noitfication
+
+
         String recipient=messageObject.getRecipient();
         int messageType=messageObject.getType();
-        int messageSendorReceived=ChatDbHelper.RECEIVED_MESSAGE;
+        int messageSenderReceived=ChatDbHelper.RECEIVED_MESSAGE;
         // ID, MESSAGE, RECIPIENT, DATE, SEND OR RECEIVED, TYPE
         //type  ===>>    1=> text ,,2=> photo 3=>video 4=>audio
         //Send or received  ====>>>   send =1 and recieved = 2 pending =>3 downloaded=3(in case of audio video and pic)
 
         ChatDbHelper chatDbHelper=new ChatDbHelper(this);
-        if(chatDbHelper.insertMessage(message,recipient,messageObject.getTime(),messageSendorReceived,messageType)){
+        if(chatDbHelper.insertMessage(message,recipient,messageObject.getTime(),messageSenderReceived,messageType)){
             //Log.e("SAURABH",true+" inserted");
         }
 //        Log.e("Saurabh",chatDbHelper.deleteMessageofPhone(messageObject.getRecipient()).intValue()+"");
         Cursor cursor=chatDbHelper.getAllMessage();
-          Log.e("Saurabh",cursor.getCount()+" column count");
-//        String[] cols=new String[]{
-//                ChatDbHelper.MESSAGE_COLUMN_ID,
-//                ChatDbHelper.MESSAGE_COLUMN_MESSAGE,
-//                ChatDbHelper.MESSAGE_COLUMN_RECIPIENT,
-//                ChatDbHelper.MESSAGE_COLUMN_DATE,
-//                ChatDbHelper.MESSAGE_COLUMN_SEND_OR_RECEIVED,
-//                ChatDbHelper.MESSAGE_COLUMN_TYPE
-//        };
-        /*cursor.moveToFirst();
-        if(cursor.getCount()!=0)
-            do{
-                Log.e("SAURABH",cursor.getString(cursor.getColumnIndex(cols[0])));
-                Log.e("SAURABH",cursor.getString(cursor.getColumnIndex(cols[1])));
-                Log.e("SAURABH",cursor.getString(cursor.getColumnIndex(cols[2])));
-                Log.e("SAURABH",cursor.getString(cursor.getColumnIndex(cols[3])));
-                Log.e("SAURABH",cursor.getString(cursor.getColumnIndex(cols[4])));
-                Log.e("SAURABH",cursor.getString(cursor.getColumnIndex(cols[5])));
-                cursor.moveToNext();
-            }while(!cursor.isAfterLast());
-
-*/
+        Log.e("Saurabh",cursor.getCount()+" column count");
         chatDbHelper.close();
+
+
+        //BroadCasting to Chat Message
+        Intent broadcastMessage=new Intent(MessageLoader.MESSAGE_LISTENER_INTENT_FILTER_STRING);
+        LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(broadcastMessage);
+
+
+
+        //Notification Service
         NotificationCompat.Builder builder=new NotificationCompat.Builder(getBaseContext());
         Intent start=new Intent(getBaseContext(),Register.class);
         PendingIntent pi=PendingIntent.getActivity(getBaseContext(),0, start, 0);

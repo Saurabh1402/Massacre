@@ -89,6 +89,7 @@ public class ChatMessageHolderAdapter extends RecyclerView.Adapter<ChatMessageHo
     public int getItemCount() {
 
 //        Log.e("SAURABH",messageList.size()+" items");
+
         return messageList.size();
 
     }
@@ -104,5 +105,10 @@ public class ChatMessageHolderAdapter extends RecyclerView.Adapter<ChatMessageHo
             return TYPE_MESSAGE_RECEIVED;
         }
         return TYPE_MESSAGE_SEND;
+    }
+    public void swapData(ArrayList<Message> data){
+        this.messageList.clear();
+        messageList.addAll(data);
+        notifyDataSetChanged();
     }
 }

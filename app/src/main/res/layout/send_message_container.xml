@@ -11,9 +11,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/send_message_background"
-        android:padding="16dp"
+        android:padding="6dp"
         android:orientation="vertical"
         android:elevation="5dp"
+        android:layout_marginTop="1dp"
         android:layout_marginLeft="50dp"
         android:layout_alignParentTop="true"
         android:layout_toStartOf="@+id/image_triangle">
@@ -39,8 +40,9 @@
             android:id="@+id/send_message_container_time"
             android:layout_gravity="end"/>
         <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:tint="@color/time_text_color"
             android:id="@+id/pending_or_sent_imageView"/>
         </LinearLayout>
     </LinearLayout>

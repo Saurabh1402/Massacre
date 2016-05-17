@@ -7,10 +7,16 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,23 +25,30 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.backendless.media.rtsp.UriParser;
 import com.google.gson.Gson;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.xml.transform.URIResolver;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity{
     public static String USER_PROFILE="USER_PROFILE";
-    public static UserProfile userProfile;
-    public static ChatMessageHolderAdapter adapter;
+    public UserProfile userProfile;
+    public ChatMessageHolderAdapter adapter;
     public static ArrayList<Message> messageList;
+    public final int MESSAGE_LOADER=1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,22 +91,29 @@ public class ChatActivity extends AppCompatActivity {
 
         final ChatDbHelper chatDbHelper=new ChatDbHelper(this);
         final EditText messageField=(EditText)findViewById(R.id.message_field_chat_activity);
+
+
         FloatingActionButton sendButton=(FloatingActionButton)findViewById(R.id.action_send_message);
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final String message=messageField.getText().toString();
-                if(message!=null && !message.equals("")){
-                    Log.e("MESSAGE",message);
-                    //String senderPhoneNumber=SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.COUNTRY_CODE,"")+SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.PHONE_NUMBER,"");
-                    chatDbHelper.insertMessage(message,userProfile.getContact(),new Date(),ChatDbHelper.PENDING_MESSAGE,ChatDbHelper.TEXT_MESSAGE);
-                    messageField.setText("");
+        if(sendButton!=null) {
+            sendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final String message = messageField.getText().toString();
+                    if (message != null && !message.equals("")) {
+                        Log.e("MESSAGE", message);
+                        //String senderPhoneNumber=SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.COUNTRY_CODE,"")+SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.PHONE_NUMBER,"");
+                        boolean insertedMessage=chatDbHelper.insertMessage(message, userProfile.getContact(), new Date(), ChatDbHelper.PENDING_MESSAGE, ChatDbHelper.TEXT_MESSAGE);
+                        messageField.setText("");
+                        //BroadCasting to Chat Message
+                        if(insertedMessage) {
+                            Intent broadcastMessage = new Intent(MessageLoader.MESSAGE_LISTENER_INTENT_FILTER_STRING);
+                            LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(broadcastMessage);
+                        }
 
-
-
+                    }
                 }
-            }
-        });
+            });
+        }
         new AsyncTask<Void,Void,Void>(){
             @Override
             protected Void doInBackground(Void... voids) {
@@ -107,56 +127,43 @@ public class ChatActivity extends AppCompatActivity {
                 return null;
             }
         }.execute();
-        Cursor cursor = chatDbHelper.getMessageofPhone(userProfile.getContact());
-        String[] cols=new String[]{
-                ChatDbHelper.MESSAGE_COLUMN_ID,
-                ChatDbHelper.MESSAGE_COLUMN_MESSAGE,
-                ChatDbHelper.MESSAGE_COLUMN_RECIPIENT,
-                ChatDbHelper.MESSAGE_COLUMN_DATE,
-                ChatDbHelper.MESSAGE_COLUMN_SEND_OR_RECEIVED,
-                ChatDbHelper.MESSAGE_COLUMN_TYPE
-        };
-        cursor.moveToFirst();
-        messageList=new ArrayList<Message>();
-        if(cursor.getCount()!=0)
-        {
-          do{
-              int messageId=cursor.getInt(cursor.getColumnIndex(cols[0]));
-              String messageText=cursor.getString(cursor.getColumnIndex(cols[1]));
-              String messageRecipient= cursor.getString(cursor.getColumnIndex(cols[2]));
-              String messageDate=cursor.getString(cursor.getColumnIndex(cols[3]));
-              int sendOrReceived=cursor.getInt(cursor.getColumnIndex(cols[4]));
-              int messageType=cursor.getInt(cursor.getColumnIndex(cols[5]));
-              Date date=new Date();
-//              Log.e("SAURABH",messageDate+"  "+ messageId);
-              SimpleDateFormat dateFormat = new SimpleDateFormat(
-                      "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-              try {
-                  date=dateFormat.parse(messageDate);
-              } catch (ParseException e) {
-                  e.printStackTrace();
-              }
-//              Log.e("SAURABH",messageDate);
-              Message message=new Message();
-              message.setSendOrReceived(sendOrReceived);
-              message.setRecipient(messageRecipient);
-              message.setMessageId(messageId);
-              message.setMessage(messageText);
-              message.setType(messageType);
-              message.setTime(date);
-              //Log.e("SAURABH", "id:"+messageId+", message:"+messageText);
-              messageList.add(message);
-              cursor.moveToNext();
-          }while(!cursor.isAfterLast());
 
-        }
 
-        adapter=new ChatMessageHolderAdapter(getBaseContext(),messageList);
+
+        adapter=new ChatMessageHolderAdapter(getBaseContext(),new ArrayList<Message>());
         RecyclerView recyclerView=(RecyclerView)findViewById(R.id.chat_message_recycler_view);
         recyclerView.setAdapter(adapter);
-        LinearLayoutManager ll=new LinearLayoutManager(this);
+        LinearLayoutManager ll=new LinearLayoutManager(ChatActivity.this);
         recyclerView.setLayoutManager(ll);
 
+        //loadMessage(chatDbHelper);
+        getSupportLoaderManager().initLoader(MESSAGE_LOADER,null,loaderCallbacks);
     }
 
+
+    private LoaderManager.LoaderCallbacks<ArrayList<Message>> loaderCallbacks=new LoaderManager.LoaderCallbacks<ArrayList<Message>>() {
+        @Override
+        public Loader<ArrayList<Message>> onCreateLoader(int id, Bundle args) {
+            if(id==MESSAGE_LOADER) {
+                Intent intent = getIntent();
+                String userProfileString = intent.getStringExtra(USER_PROFILE);
+    //        Log.e("SAURABH",userProfileString);
+                UserProfile userProfile1 = new Gson().fromJson(userProfileString, UserProfile.class);
+    //
+                Loader<ArrayList<Message>> loader = new MessageLoader(getApplicationContext(), userProfile1);
+                return loader;
+            }
+            return null;
+        }
+
+        @Override
+        public void onLoadFinished(Loader<ArrayList<Message>> loader, ArrayList<Message> data) {
+                adapter.swapData(data);
+        }
+
+        @Override
+        public void onLoaderReset(Loader<ArrayList<Message>> loader) {
+            adapter.swapData(new ArrayList<Message>());
+        }
+    };
 }
