@@ -31,7 +31,7 @@ public class LoadFriendsProfileAdapter extends RecyclerView.Adapter<LoadFriendsP
     public static final int TYPE_NOT_REGISTERED_ON_MASSACRE=0;
 
     public ArrayList<UserProfile> list;
-    public static Context context;
+    public Context context;
 
     public LoadFriendsProfileAdapter(ArrayList<UserProfile> list,Context context){
         this.list=list;
@@ -96,7 +96,7 @@ public class LoadFriendsProfileAdapter extends RecyclerView.Adapter<LoadFriendsP
         return list.size();
     }
 
-    public static class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public static class MyHolder extends RecyclerView.ViewHolder{
         public int holderId;
         public CircleImageView imageView;
         public TextView friend_name;
@@ -118,10 +118,12 @@ public class LoadFriendsProfileAdapter extends RecyclerView.Adapter<LoadFriendsP
 
         }
 
-        @Override
-        public void onClick(View view) {
-            Toast.makeText(context,"fadsfas",Toast.LENGTH_SHORT).show();
-        }
+
+    }
+    public void swapData(ArrayList<UserProfile> data){
+        this.list.clear();
+        this.list.addAll(data);
+        notifyDataSetChanged();
     }
 }
 

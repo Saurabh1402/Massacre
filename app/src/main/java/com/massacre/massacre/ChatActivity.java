@@ -4,19 +4,16 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,21 +22,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-import com.backendless.media.rtsp.UriParser;
 import com.google.gson.Gson;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.Locale;
-
-import javax.xml.transform.URIResolver;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -47,6 +35,7 @@ public class ChatActivity extends AppCompatActivity{
     public static String USER_PROFILE="USER_PROFILE";
     public UserProfile userProfile;
     public ChatMessageHolderAdapter adapter;
+    RecyclerView recyclerView;
     public static ArrayList<Message> messageList;
     public final int MESSAGE_LOADER=1;
     @Override
@@ -118,7 +107,8 @@ public class ChatActivity extends AppCompatActivity{
             @Override
             protected Void doInBackground(Void... voids) {
                 final Intent messagingService = new Intent(getBaseContext(), MessagingService.class);
-                //startService(messagingService);
+//                startService(messagingService);
+//                startService(messagingService);
                 final PendingIntent pending = PendingIntent.getService(getBaseContext(), 0,messagingService , 0);
                 final AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                 alarm.cancel(pending);
@@ -126,12 +116,18 @@ public class ChatActivity extends AppCompatActivity{
                 alarm.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(),interval, pending);
                 return null;
             }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+
+            }
         }.execute();
 
 
 
         adapter=new ChatMessageHolderAdapter(getBaseContext(),new ArrayList<Message>());
-        RecyclerView recyclerView=(RecyclerView)findViewById(R.id.chat_message_recycler_view);
+        recyclerView=(RecyclerView)findViewById(R.id.chat_message_recycler_view);
         recyclerView.setAdapter(adapter);
         LinearLayoutManager ll=new LinearLayoutManager(ChatActivity.this);
         recyclerView.setLayoutManager(ll);
@@ -159,6 +155,7 @@ public class ChatActivity extends AppCompatActivity{
         @Override
         public void onLoadFinished(Loader<ArrayList<Message>> loader, ArrayList<Message> data) {
                 adapter.swapData(data);
+                recyclerView.scrollToPosition(adapter.getItemCount()-1);
         }
 
         @Override

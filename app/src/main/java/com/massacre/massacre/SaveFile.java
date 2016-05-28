@@ -2,10 +2,12 @@ package com.massacre.massacre;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -260,10 +262,11 @@ public class SaveFile {
 
                         }
                         Wrapper wrapper1=new Wrapper(friendList);
-                        if(ContactActivity.adapter!=null){
-                            ContactActivity.userProfiles=friendList;
-                            ContactActivity.adapter.notifyDataSetChanged();
-                        }
+                        //BroadCast Data to ContactActivity
+                        Intent sendBroadcast=new Intent(AllContactLoader.INTENT_FILTER_ALL_FRIEND);
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(sendBroadcast);
+
+
                         all_friendString= new Gson().toJson(wrapper1);
                         SaveFile.saveDataToSharedPreference(context,MyApplication.ALL_FRIENDS_OBJECT,all_friendString);
 

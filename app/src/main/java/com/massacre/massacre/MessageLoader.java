@@ -22,7 +22,7 @@ import java.util.Locale;
 public class MessageLoader extends AsyncTaskLoader<ArrayList<Message>>{
     UserProfile userProfile;
     public static final String MESSAGE_LISTENER_INTENT_FILTER_STRING ="com.massacre.MESSAGE_LISTENER";
-
+    ArrayList<Message> cached;
     public MessageLoader(Context context,UserProfile userProfile) {
         super(context);
         this.userProfile=userProfile;
@@ -35,7 +35,13 @@ public class MessageLoader extends AsyncTaskLoader<ArrayList<Message>>{
         LocalBroadcastManager localBroadcastManager=LocalBroadcastManager.getInstance(getContext());
         IntentFilter filter=new IntentFilter(MESSAGE_LISTENER_INTENT_FILTER_STRING);
         localBroadcastManager.registerReceiver(messageListenerReceiver,filter);
-        forceLoad();
+        if(cached==null){
+            forceLoad();
+        }else{
+            deliverResult(cached);
+
+        }
+
     }
 
     @Override
@@ -89,6 +95,7 @@ public class MessageLoader extends AsyncTaskLoader<ArrayList<Message>>{
 
     @Override
     public void deliverResult(ArrayList<Message> data) {
+        cached=data;
         super.deliverResult(data);
     }
 

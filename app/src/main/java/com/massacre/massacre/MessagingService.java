@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.backendless.Backendless;
@@ -19,6 +20,8 @@ import com.backendless.messaging.PushPolicyEnum;
 import com.google.gson.Gson;
 
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -42,54 +45,46 @@ public class MessagingService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
+        Log.e("SAURABH","fsadf" + startId);
 
     Backendless.initApp(this,
                 MyApplication.APPLICATION_SECRET_KEY_BACKENDLESS,
                 MyApplication.ANDROID_SECRET_KEY_BACKENDLESS,
                 MyApplication.APPLICATION_VERSION_BACKENDLESS
         );
-//            Thread t = new Thread() {
-//                public void run() {
-//
-//                    try {
-//
-//                        Thread.sleep(2000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                }
-//            };
-//        t.start();
+        executeMethod();
+        return START_STICKY;
 
+    }
 
-                        ChatDbHelper db = new ChatDbHelper(MessagingService.this);
-                        Cursor cursor = db.getPendingMessages();
+    public void executeMethod(){
 
-                        Log.e("Saurabh", cursor.getCount() + " column count");
-                        String[] cols = new String[]{
-                                ChatDbHelper.MESSAGE_COLUMN_ID,
-                                ChatDbHelper.MESSAGE_COLUMN_MESSAGE,
-                                ChatDbHelper.MESSAGE_COLUMN_RECIPIENT,
-                                ChatDbHelper.MESSAGE_COLUMN_DATE,
-                                ChatDbHelper.MESSAGE_COLUMN_SEND_OR_RECEIVED,
-                                ChatDbHelper.MESSAGE_COLUMN_TYPE
-                        };
-                        cursor.moveToFirst();
+        ChatDbHelper db = new ChatDbHelper(MessagingService.this);
+        Cursor cursor = db.getPendingMessages();
 
-                        if (cursor.getCount() != 0)
-                            do {
-                                int messageId = cursor.getInt(cursor.getColumnIndex(cols[0]));
-                                String messageText = cursor.getString(cursor.getColumnIndex(cols[1]));
-                                String messageRecipient = cursor.getString(cursor.getColumnIndex(cols[2]));
-                                String messageDate = cursor.getString(cursor.getColumnIndex(cols[3]));
-                                int messageType = cursor.getInt(cursor.getColumnIndex(cols[5]));
-                                String senderPhoneNumber =
-                                        SaveFile.getDataFromSharedPreference(getBaseContext(),
-                                                MyApplication.COUNTRY_CODE, "") +
-                                                SaveFile.getDataFromSharedPreference(getBaseContext(),
-                                                        MyApplication.PHONE_NUMBER, "");
+        Log.e("Saurabh", cursor.getCount() + " column count");
+        String[] cols = new String[]{
+                ChatDbHelper.MESSAGE_COLUMN_ID,
+                ChatDbHelper.MESSAGE_COLUMN_MESSAGE,
+                ChatDbHelper.MESSAGE_COLUMN_RECIPIENT,
+                ChatDbHelper.MESSAGE_COLUMN_DATE,
+                ChatDbHelper.MESSAGE_COLUMN_SEND_OR_RECEIVED,
+                ChatDbHelper.MESSAGE_COLUMN_TYPE
+        };
+        cursor.moveToFirst();
+
+        if (cursor.getCount() != 0)
+            do {
+                int messageId = cursor.getInt(cursor.getColumnIndex(cols[0]));
+                String messageText = cursor.getString(cursor.getColumnIndex(cols[1]));
+                String messageRecipient = cursor.getString(cursor.getColumnIndex(cols[2]));
+                String messageDate = cursor.getString(cursor.getColumnIndex(cols[3]));
+                int messageType = cursor.getInt(cursor.getColumnIndex(cols[5]));
+                String senderPhoneNumber =
+                        SaveFile.getDataFromSharedPreference(getBaseContext(),
+                                MyApplication.COUNTRY_CODE, "") +
+                                SaveFile.getDataFromSharedPreference(getBaseContext(),
+                                        MyApplication.PHONE_NUMBER, "");
 
 //                Log.e("SAURABH",+"");
 //                Log.e("SAURABH",);
@@ -97,13 +92,9 @@ public class MessagingService extends Service {
 //                Log.e("SAURABH",cursor.getString(cursor.getColumnIndex(cols[3])));
 //                Log.e("SAURABH",cursor.getInt(cursor.getColumnIndex(cols[4]))+"");
 //                Log.e("SAURABH",cursor.getInt(cursor.getColumnIndex(cols[5]))+"");
-                                sendMessage(messageId, db, senderPhoneNumber, "", "", messageText, messageRecipient, messageType);
-                                cursor.moveToNext();
-                            } while (!cursor.isAfterLast());
-
-
-
-        return START_STICKY;
+                sendMessage(messageId, db, senderPhoneNumber, "", "", messageText, messageRecipient, messageType);
+                cursor.moveToNext();
+            } while (!cursor.isAfterLast());
 
     }
 
@@ -133,13 +124,15 @@ public class MessagingService extends Service {
             public void handleResponse(MessageStatus messageStatus) {
 //                Log.e("SAURABH",messageStatus.toString());
                 db.updateMessage(messageId,message,messageRecipient,date,ChatDbHelper.SEND_MESSAGE,messageType);
+                Intent broadcastMessage = new Intent(MessageLoader.MESSAGE_LISTENER_INTENT_FILTER_STRING);
+                LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(broadcastMessage);
 
             }
 
             @Override
             public void handleFault(BackendlessFault backendlessFault) {
 //                Log.e("SAURABH",backendlessFault.getMessage());
-                
+
             }
         });
 

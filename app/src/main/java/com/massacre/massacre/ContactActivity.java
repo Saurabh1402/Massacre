@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,9 +39,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class ContactActivity extends AppCompatActivity {
-    static LoadFriendsProfileAdapter adapter;
-    static ArrayList<UserProfile> userProfiles;
-
+    LoadFriendsProfileAdapter adapter;
+    ArrayList<UserProfile> userProfiles;
+    public final int LOAD_ALL_FRIEND=1;
+    public RecyclerView recyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,78 +57,27 @@ public class ContactActivity extends AppCompatActivity {
         long interval = 10*1000;//milliseconds
         alarm.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(),interval, pending);
         */
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        if(fab!=null) {
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                ChatDbHelper chatDbHelper=new ChatDbHelper(ContactActivity.this);
+                    ChatDbHelper chatDbHelper = new ChatDbHelper(ContactActivity.this);
 
-                Log.e("Saurabh",chatDbHelper.deleteAllMessages()+"");
-
-
-                /*DeliveryOptions  deliveroption = new DeliveryOptions();
-                deliveroption.setPushPolicy(PushPolicyEnum.ONLY);
-                deliveroption.addPushSinglecast("f89ade4b");//9936851c  f89ade4b
-
-                PublishOptions publishOptions = new PublishOptions();
-                publishOptions.putHeader("android-ticker-text","Saurabh Vishwakarma");
-                publishOptions.putHeader("android-content-title","Push Notification");
-                publishOptions.putHeader("android-content-text","sfsdfdsfdsfdsafsdafsdafasdfasdfsafasdfsadfasdf");
-
-                com.massacre.massacre.Message messageObject=new com.massacre.massacre.Message();
-                String message="message allsdfdsfs";
-                messageObject.setMessage(message);
-                messageObject.setRecipient("919450495661");
-                messageObject.setTime(new Date());
-                messageObject.setType();
-                message=new Gson().toJson(messageObject);
-                Backendless.Messaging.publish(message, publishOptions, deliveroption,new AsyncCallback<MessageStatus>(){
-
-                    @Override
-                    public void handleResponse(MessageStatus messageStatus) {
-                        Log.e("SAURABH",messageStatus.toString());
-                    }
-
-                    @Override
-                    public void handleFault(BackendlessFault backendlessFault) {
-                        Log.e("SAURABH",backendlessFault.getMessage());
-
-                    }
-                });
-
-*/
-                /*Gson gson=new Gson();
-                SharedPreferences sharedPreferences=getApplicationContext().getSharedPreferences(MyApplication.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
-
-                Wrapper wrapper=gson.fromJson(sharedPreferences.getString("ALLCONTACT",""),Wrapper.class);
-                ArrayList<HashMap<String,String>> allContact=wrapper.userProfiles;
-                Iterator<HashMap<String,String>> iterator=allContact.iterator();
-                do{
-                    HashMap<String,String> data=iterator.next();
-                    //BackendlessDataQuery
-                    Log.e("SAURABH",data.get(MyContact.NAME_OF_CONTACT)+"  "+data.get(MyContact.PHONE_NUMBER_OF_CONTACT));
-                }while(iterator.hasNext());*/
-            }
-        });
-
-
-        RecyclerView recyclerView=(RecyclerView)findViewById(R.id.all_friend_recycler_view);
-        String all_friend=SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.ALL_FRIENDS_OBJECT,"");
-        //Log.e("SAURABH",all_friend);
-        if(!all_friend.equals("")) {
-
-            userProfiles=new Gson().fromJson(all_friend,Wrapper.class).userProfiles;
-            //Log.e("SAURABH",wrapper.userProfiles+"");
-            if(userProfiles!=null) {
-                adapter = new LoadFriendsProfileAdapter(userProfiles, getBaseContext());
-                recyclerView.setAdapter(adapter);
-                recyclerView.setHasFixedSize(true);
-                LinearLayoutManager ll=new LinearLayoutManager(this);
-                recyclerView.setLayoutManager(ll);
-                recyclerViewTouchHandle(recyclerView);
-
-            }
+                    Log.e("Saurabh", chatDbHelper.deleteAllMessages() + "");
+                }
+            });
         }
+
+        recyclerView=(RecyclerView)findViewById(R.id.all_friend_recycler_view);
+        adapter = new LoadFriendsProfileAdapter(new ArrayList<UserProfile>(), getBaseContext());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager ll=new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(ll);
+        recyclerViewTouchHandle(recyclerView);
+
+        getSupportLoaderManager().initLoader(LOAD_ALL_FRIEND,null,loaderCallbacks);
 
     }
     public void recyclerViewTouchHandle(RecyclerView recyclerView){
@@ -172,6 +124,26 @@ public class ContactActivity extends AppCompatActivity {
 
 
     }
+    private LoaderManager.LoaderCallbacks<ArrayList<UserProfile>> loaderCallbacks=
+            new LoaderManager.LoaderCallbacks<ArrayList<UserProfile>>() {
+                @Override
+                public Loader<ArrayList<UserProfile>> onCreateLoader(int id, Bundle args) {
+                    if(id==LOAD_ALL_FRIEND){
+                        return new AllContactLoader(getBaseContext());
+                    }
+                    return null;
+                }
+
+                @Override
+                public void onLoadFinished(Loader<ArrayList<UserProfile>> loader, ArrayList<UserProfile> data) {
+                    adapter.swapData(data);
+                }
+
+                @Override
+                public void onLoaderReset(Loader<ArrayList<UserProfile>> loader) {
+
+                }
+            };
 
 
 
