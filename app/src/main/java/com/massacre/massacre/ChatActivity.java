@@ -96,6 +96,7 @@ public class ChatActivity extends AppCompatActivity{
                         //BroadCasting to Chat Message
                         if(insertedMessage) {
                             Intent broadcastMessage = new Intent(MessageLoader.MESSAGE_LISTENER_INTENT_FILTER_STRING);
+
                             LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(broadcastMessage);
                         }
 
@@ -103,26 +104,27 @@ public class ChatActivity extends AppCompatActivity{
                 }
             });
         }
-        new AsyncTask<Void,Void,Void>(){
-            @Override
-            protected Void doInBackground(Void... voids) {
-                final Intent messagingService = new Intent(getBaseContext(), MessagingService.class);
-//                startService(messagingService);
-//                startService(messagingService);
-                final PendingIntent pending = PendingIntent.getService(getBaseContext(), 0,messagingService , 0);
-                final AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                alarm.cancel(pending);
-                long interval = 2*1000;//milliseconds
-                alarm.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(),interval, pending);
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-
-            }
-        }.execute();
+        final Intent messagingService = new Intent(getBaseContext(), MessagingService.class);
+        startService(messagingService);
+//        new AsyncTask<Void,Void,Void>(){
+//            @Override
+//            protected Void doInBackground(Void... voids) {
+//                final Intent messagingService = new Intent(getBaseContext(), MessagingService.class);
+//
+//                final PendingIntent pending = PendingIntent.getService(getBaseContext(), 0,messagingService , 0);
+//                final AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//                alarm.cancel(pending);
+//                long interval = 1000;//milliseconds
+//                alarm.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(),interval, pending);
+//                return null;
+//            }
+//
+//            @Override
+//            protected void onPostExecute(Void aVoid) {
+//                super.onPostExecute(aVoid);
+//
+//            }
+//        }.execute();
 
 
 

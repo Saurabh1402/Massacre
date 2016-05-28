@@ -89,7 +89,7 @@ public class ShowNotification extends IntentService{
 
         //Notification Service
         NotificationCompat.Builder builder=new NotificationCompat.Builder(getBaseContext());
-        Intent start=new Intent(getBaseContext(),Register.class);
+        Intent start=new Intent(getBaseContext(),ContactActivity.class);
         PendingIntent pi=PendingIntent.getActivity(getBaseContext(),0, start, 0);
         NotificationManager nm=(NotificationManager)getBaseContext().getSystemService(Context.NOTIFICATION_SERVICE);
         builder.setSmallIcon(R.mipmap.ic_launcher);

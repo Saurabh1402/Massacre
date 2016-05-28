@@ -79,9 +79,20 @@
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
-        <service android:name=".ShowNotification"></service>
-        <service android:name=".ContactSyncService"></service>
-        <service android:name=".MessagingService"></service>
+        <service android:name=".ShowNotification">
+
+        </service>
+        <service android:name=".ContactSyncService">
+            <intent-filter>
+            <action android:name="android.intent.action.BOOT_COMPLETED" />
+            <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+        </intent-filter></service>
+        <service android:name=".MessagingService">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </service>
 
         <activity
             android:name=".ChatActivity"
