@@ -30,31 +30,50 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Created by saurabh on 12/5/16.
  */
-public class MessagingService extends IntentService {
-    public MessagingService(String name){
-        super(name);
-    }
-    public MessagingService(){
-        super("Messaging Service");
-    }
+public class MessagingService extends Service {
+    Thread thread;
+//    public MessagingService(String name){
+//        super(name);
+//    }
+//    public MessagingService(){
+//        super("Messaging Service");
+//    }
+
+
+    @Nullable
     @Override
-    protected void onHandleIntent(Intent intent) {
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
         Backendless.initApp(this,
                 MyApplication.APPLICATION_SECRET_KEY_BACKENDLESS,
                 MyApplication.ANDROID_SECRET_KEY_BACKENDLESS,
                 MyApplication.APPLICATION_VERSION_BACKENDLESS
         );
-        while(true){
-            try {
-                executeMethod();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        if(thread==null) {
+            thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
 
+
+                    try {
+                        while (true) {
+                            executeMethod();
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            thread.start();
+        }
+        return START_STICKY;
     }
 
-    public void executeMethod() throws InterruptedException {
+    public synchronized void executeMethod() throws InterruptedException {
 
         ChatDbHelper db = new ChatDbHelper(MessagingService.this);
         Cursor cursor = db.getPendingMessages();
@@ -92,13 +111,15 @@ public class MessagingService extends IntentService {
 //                Log.e("SAURABH",cursor.getString(cursor.getColumnIndex(cols[3])));
 //                Log.e("SAURABH",cursor.getInt(cursor.getColumnIndex(cols[4]))+"");
 //                Log.e("SAURABH",cursor.getInt(cursor.getColumnIndex(cols[5]))+"");
-                sendMessage(messageId, db, senderPhoneNumber, "", "", messageText, messageRecipient, messageType);
+                if(!sendMessage(messageId, db, senderPhoneNumber, "", "", messageText, messageRecipient, messageType)){
+                    break;
+                }
                 cursor.moveToNext();
             } while (!cursor.isAfterLast());
 
     }
 
-    public void sendMessage(final int messageId, final ChatDbHelper db, String contentTitle, String contentText,
+    public boolean sendMessage(final int messageId, final ChatDbHelper db, String contentTitle, String contentText,
                             String tickerText, final String message, final String messageRecipient, final int messageType){
         String recipientDeviceId=MyApplication.getDeviceId(getBaseContext(),messageRecipient);
         final Date date=new Date();
@@ -125,12 +146,15 @@ public class MessagingService extends IntentService {
                 db.updateMessage(messageId,message,messageRecipient,date,ChatDbHelper.SEND_MESSAGE,messageType);
                 Intent broadcastMessage = new Intent(MessageLoader.MESSAGE_LISTENER_INTENT_FILTER_STRING);
                 LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(broadcastMessage);
+                return true;
+            }else{
+                return false;
             }
         }catch (Exception backendlessFault){
 
         }
 
-
+    return false;
     }
 
 }

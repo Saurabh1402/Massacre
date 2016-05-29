@@ -22,7 +22,6 @@ import android.view.MenuItem;
 import com.backendless.Backendless;
 
 public class RegisterActivity extends AppCompatActivity {
-    Intent service;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,14 +33,8 @@ public class RegisterActivity extends AppCompatActivity {
         );
         if(SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.REGISTERED,false)){
             //Log.e("Saurab",SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.REGISTERED,false)+"");
-                    final Intent service = new Intent(getApplicationContext(), ContactSyncService.class);
-                    final PendingIntent pending = PendingIntent.getService(getApplicationContext(), 0, service, 0);
-                    final AlarmManager alarm = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-                    alarm.cancel(pending);
-                    long interval = 60*60*1000;//milliseconds
-                    alarm.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(),interval, pending);
 
-
+            new StartAllService().execute(getBaseContext());
 
             Intent intent=new Intent(RegisterActivity.this,ProfileActivity.class);
             startActivity(intent);

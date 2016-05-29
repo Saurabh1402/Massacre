@@ -1,6 +1,7 @@
 package com.massacre.massacre;
 
 import android.app.AlarmManager;
+import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
@@ -106,16 +108,16 @@ public class ChatActivity extends AppCompatActivity{
         }
         final Intent messagingService = new Intent(getBaseContext(), MessagingService.class);
         startService(messagingService);
+
 //        new AsyncTask<Void,Void,Void>(){
 //            @Override
 //            protected Void doInBackground(Void... voids) {
-//                final Intent messagingService = new Intent(getBaseContext(), MessagingService.class);
-//
-//                final PendingIntent pending = PendingIntent.getService(getBaseContext(), 0,messagingService , 0);
-//                final AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//                alarm.cancel(pending);
-//                long interval = 1000;//milliseconds
-//                alarm.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(),interval, pending);
+////                final Intent messagingService = new Intent(getBaseContext(), MessagingService.class);
+////                final PendingIntent pending = PendingIntent.getService(getBaseContext(), 0,messagingService , 0);
+////                final AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+////                alarm.cancel(pending);
+////                long interval = 1000;//milliseconds
+////                alarm.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(),interval, pending);
 //                return null;
 //            }
 //
@@ -125,6 +127,7 @@ public class ChatActivity extends AppCompatActivity{
 //
 //            }
 //        }.execute();
+
 
 
 

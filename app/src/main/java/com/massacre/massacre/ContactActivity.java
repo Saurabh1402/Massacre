@@ -50,7 +50,8 @@ public class ContactActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        /*final Intent service = new Intent(getApplicationContext(), MessagingService.class);
+        /*
+        final Intent service = new Intent(getApplicationContext(), MessagingService.class);
         final PendingIntent pending = PendingIntent.getService(getApplicationContext(), 0, service, 0);
         final AlarmManager alarm = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         alarm.cancel(pending);

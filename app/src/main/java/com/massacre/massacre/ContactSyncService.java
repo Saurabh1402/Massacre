@@ -16,15 +16,7 @@ import java.util.Date;
 /**
  * Created by saurabh on 6/5/16.
  */
-public class ContactSyncService extends IntentService{
-
-    public ContactSyncService(String name) {
-        super(name);
-    }
-
-    public ContactSyncService() {
-        super("Update Contact Service");
-    }
+public class ContactSyncService extends Service{
 
     @Override
     public void onCreate() {
@@ -38,50 +30,24 @@ public class ContactSyncService extends IntentService{
         return null;
     }
 
-    @Override
-    protected void onHandleIntent(Intent intent) {
-        //Log.e("Saurabh", "1");
-//        if(MyApplication.isNetworkAvailable(getBaseContext())){
-//            Toast.makeText(getBaseContext(),"Available", Toast.LENGTH_SHORT).show();
-//        }
-//        else{
-//
-//            Toast.makeText(getBaseContext(),"Not Available", Toast.LENGTH_SHORT).show();
-//        }
-        /*int SDK_INT = android.os.Build.VERSION.SDK_INT;
-        if (SDK_INT > 8)
-        {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                    .permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-            //your codes here
-        */    SaveFile.updateFriendsObject(this.getBaseContext());
-        //}
-
-
-    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        //Log.e("Saurabh", "1");
-//        if(MyApplication.isNetworkAvailable(getBaseContext())){
-//            Toast.makeText(getBaseContext(),"Available", Toast.LENGTH_SHORT).show();
-//            Log.e("SAURABH","available"+new Date());
-//        }
-//        else{
-//
-//            Toast.makeText(getBaseContext(),"Not Available", Toast.LENGTH_SHORT).show();
-//            Log.e("SAURABH","unavailable"+new Date());
-//        }
-        int SDK_INT = android.os.Build.VERSION.SDK_INT;
-        if (SDK_INT > 8)
-        {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                    .permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-            //your codes here
-            SaveFile.updateFriendsObject(this.getBaseContext());
-        }
+        Thread thread=new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    SaveFile.updateFriendsObject(ContactSyncService.this.getBaseContext());
+                    try {
+                        Log.e("SAURABH","contactSyncSerevice ");
+                        Thread.sleep(60*1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        thread.start();
         return START_STICKY;
     }
 }
