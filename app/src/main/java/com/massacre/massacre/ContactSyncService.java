@@ -17,7 +17,7 @@ import java.util.Date;
  * Created by saurabh on 6/5/16.
  */
 public class ContactSyncService extends Service{
-
+    static Thread thread;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -33,21 +33,23 @@ public class ContactSyncService extends Service{
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Thread thread=new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(true) {
-                    SaveFile.updateFriendsObject(ContactSyncService.this.getBaseContext());
-                    try {
-                        Log.e("SAURABH","contactSyncSerevice ");
-                        Thread.sleep(60*1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+//        if(thread==null)
+            thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (true) {
+                        SaveFile.updateFriendsObject(ContactSyncService.this.getBaseContext());
+                        try {
+//                            Log.e("SAURABH", "contactSyncSerevice "+thread);
+                            Thread.sleep(60*60 * 1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
-        });
-        thread.start();
+            });
+            thread.start();
+
         return START_STICKY;
     }
 }

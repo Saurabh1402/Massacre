@@ -1,37 +1,24 @@
 package com.massacre.massacre;
 
-import android.app.IntentService;
 import android.app.Service;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.IBinder;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.backendless.Backendless;
-import com.backendless.async.callback.AsyncCallback;
-import com.backendless.async.message.AsyncMessage;
-import com.backendless.exceptions.BackendlessFault;
 import com.backendless.messaging.DeliveryOptions;
 import com.backendless.messaging.MessageStatus;
 import com.backendless.messaging.PublishOptions;
 import com.backendless.messaging.PublishStatusEnum;
-import com.backendless.messaging.PushPolicyEnum;
 import com.google.gson.Gson;
 
 import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * Created by saurabh on 12/5/16.
- */
 public class MessagingService extends Service {
-    Thread thread;
+    static Thread thread;
 //    public MessagingService(String name){
 //        super(name);
 //    }
@@ -61,7 +48,18 @@ public class MessagingService extends Service {
 
                     try {
                         while (true) {
-                            executeMethod();
+//                            Log.e("SAURABH","thead  "+thread);
+
+//                            Log.e("SAURABH","connected:  "+CheckInternetConnectivityBroadcastReceiver.isConnected);
+                            boolean flag=CheckInternetConnectivityBroadcastReceiver.isConnected;
+                            Log.e("SAURABH","FLAG "+flag);
+                            if(flag){
+                                executeMethod();
+                            }
+                            else{
+                                Thread.sleep(2000);
+                            }
+
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -78,7 +76,7 @@ public class MessagingService extends Service {
         ChatDbHelper db = new ChatDbHelper(MessagingService.this);
         Cursor cursor = db.getPendingMessages();
 
-        Log.e("Saurabh", cursor.getCount() + " column count");
+//        Log.e("Saurabh", cursor.getCount() + " column count");
         if(cursor.getCount()==0){
             Thread.sleep(2000);
         }
@@ -112,6 +110,7 @@ public class MessagingService extends Service {
 //                Log.e("SAURABH",cursor.getInt(cursor.getColumnIndex(cols[4]))+"");
 //                Log.e("SAURABH",cursor.getInt(cursor.getColumnIndex(cols[5]))+"");
                 if(!sendMessage(messageId, db, senderPhoneNumber, "", "", messageText, messageRecipient, messageType)){
+                    Thread.sleep(2000);
                     break;
                 }
                 cursor.moveToNext();
@@ -124,7 +123,7 @@ public class MessagingService extends Service {
         String recipientDeviceId=MyApplication.getDeviceId(getBaseContext(),messageRecipient);
         final Date date=new Date();
         DeliveryOptions deliveroption = new DeliveryOptions();
-        //Log.e("SAURABH",recipientDeviceId+ "   sfsdfsd");
+//        Log.e("SAURABH",recipientDeviceId+ "   sfsdfsd");
         deliveroption.addPushSinglecast(recipientDeviceId);//9936851c  f89ade4b
 
         PublishOptions publishOptions = new PublishOptions();

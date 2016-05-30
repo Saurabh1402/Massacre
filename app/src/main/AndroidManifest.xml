@@ -62,11 +62,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".CheckInternetConnectivityBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".ProfileActivity"
             android:label="@string/title_activity_profile"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".UsernameActivity"
             android:label="@string/title_activity_username"
@@ -76,17 +81,20 @@
             android:name=".ContactActivity"
             android:label="@string/title_activity_contact"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <service android:name=".ShowNotification">
 
         </service>
-        <service android:name=".ContactSyncService">
+        <service
+            android:name=".ContactSyncService"
+            android:exported="false">
             <intent-filter>
             <action android:name="android.intent.action.BOOT_COMPLETED" />
             <action android:name="android.intent.action.QUICKBOOT_POWERON" />
         </intent-filter></service>
-        <service android:name=".MessagingService">
+        <service android:name=".MessagingService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />

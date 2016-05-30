@@ -195,7 +195,6 @@ public class SaveFile {
                             do{
                                 UserProfile remoteUserProfile=it.next();
                                 //Log.e("SAURABH","remote user profile"+remoteUserProfile.getContact()+"  "+remoteUserProfile.getProfile_picture_available());
-                                boolean flag=false;
                                 friendList.add(remoteUserProfile);
                                 for (int i=0;i<tempList.size();i++){
                                     UserProfile savedUserProfile=tempList.get(i);
@@ -209,13 +208,13 @@ public class SaveFile {
                                                 Log.e("SAURABH","last updated:null");
                                                 String urlString=MyApplication.FilesFolderBackendless+"/"+MyApplication.THUMBNAIL_PICTURE_FOLDER_BACKENDLESS+"/"+remoteUserProfile.getContact()+".jpg";
                                                 String downloadLocation=MyApplication.getExternalAPPFolder() +"/"+ MyApplication.getThumbnailFriendsProfileFolder(context)+"/";
-                                                downloadImageFromBackendless(remoteUserProfile,urlString,MyApplication.QUALITY_THUMBNAIL,downloadLocation);
+                                                downloadImageFromBackendless(remoteUserProfile,urlString,MyApplication.QUALITY_THUMBNAIL,downloadLocation,context);
                                             }
                                             else{
                                                 if(remoteUserProfile.getProfile_picture_last_updated().after(savedUserProfile.getProfile_picture_last_updated())){
                                                     String urlString=MyApplication.FilesFolderBackendless+"/"+MyApplication.THUMBNAIL_PICTURE_FOLDER_BACKENDLESS+"/"+remoteUserProfile.getContact()+".jpg";
                                                     String downloadLocation=MyApplication.getExternalAPPFolder() +"/"+ MyApplication.getThumbnailFriendsProfileFolder(context)+"/";
-                                                    downloadImageFromBackendless(remoteUserProfile,urlString,MyApplication.QUALITY_THUMBNAIL,downloadLocation);
+                                                    downloadImageFromBackendless(remoteUserProfile,urlString,MyApplication.QUALITY_THUMBNAIL,downloadLocation,context);
 
                                                 }else{
                                                     String downloadLocation=MyApplication.getExternalAPPFolder() +"/"+ MyApplication.getThumbnailFriendsProfileFolder(context)+"/";
@@ -225,7 +224,7 @@ public class SaveFile {
                                                         //Log.e("SAURABH","last updated:not null and is before");
 
                                                         String urlString=MyApplication.FilesFolderBackendless+"/"+MyApplication.THUMBNAIL_PICTURE_FOLDER_BACKENDLESS+"/"+remoteUserProfile.getContact()+".jpg";
-                                                        downloadImageFromBackendless(remoteUserProfile,urlString,MyApplication.QUALITY_THUMBNAIL,downloadLocation);
+                                                        downloadImageFromBackendless(remoteUserProfile,urlString,MyApplication.QUALITY_THUMBNAIL,downloadLocation,context);
 
 
                                                     }
@@ -253,7 +252,7 @@ public class SaveFile {
                                 if(user.getProfile_picture_available()){
                                     String urlString=MyApplication.FilesFolderBackendless+"/"+MyApplication.THUMBNAIL_PICTURE_FOLDER_BACKENDLESS+"/"+user.getContact()+".jpg";
                                     String downloadLocation=MyApplication.getExternalAPPFolder() +"/"+ MyApplication.getThumbnailFriendsProfileFolder(context)+"/";
-                                    downloadImageFromBackendless(user,urlString,MyApplication.QUALITY_THUMBNAIL,downloadLocation);
+                                    downloadImageFromBackendless(user,urlString,MyApplication.QUALITY_THUMBNAIL,downloadLocation,context);
 
                                 }
                                 //Toast.makeText(context,MyApplication.THUMBNAIL_PICTURE_FOLDER_BACKENDLESS+"/"+user.getContact()+".jpg",Toast.LENGTH_SHORT).show();
@@ -297,23 +296,35 @@ public class SaveFile {
             e.printStackTrace();
         }
     }
-    public static void downloadImageFromBackendless(UserProfile user,String urlString,int quality,String downloadLocation){
-        try {
-            URL url=new URL(urlString);
-            HttpURLConnection conn=(HttpURLConnection)url.openConnection();
-            conn.setDoInput(true);
+    public static void downloadImageFromBackendless(final UserProfile user, final String urlString, final int quality, final String downloadLocation,final Context context){
+        new AsyncTask<Void,Void,Void>(){
 
-            Log.e("SAURABH DownloadImage",conn.getContentLength()+"  "+user.getContact());
-            Bitmap bitmap = BitmapFactory.decodeStream(conn.getInputStream());
-            conn.disconnect();
+            @Override
+            protected Void doInBackground(Void... voids) {
+                try {
+                    URL url=new URL(urlString);
+                    HttpURLConnection conn=(HttpURLConnection)url.openConnection();
+                    conn.setDoInput(true);
+//                    Log.e("SAURABH DownloadImage",conn.getContentLength()+"  "+user.getContact());
+                    Bitmap bitmap = BitmapFactory.decodeStream(conn.getInputStream());
+                    conn.disconnect();
+                    SaveFile.saveImage(bitmap, quality,downloadLocation , user.getContact() + ".jpg");
+                    //Toast.makeText(context,"Downloaded",Toast.LENGTH_SHORT).show();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }return null;
+            }
 
-            SaveFile.saveImage(bitmap, quality,downloadLocation , user.getContact() + ".jpg");
-            //Toast.makeText(context,"Downloaded",Toast.LENGTH_SHORT).show();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                Intent sendBroadcast=new Intent(AllContactLoader.INTENT_FILTER_ALL_FRIEND);
+                LocalBroadcastManager.getInstance(context).sendBroadcast(sendBroadcast);
+
+            }
+        }.execute();
 
     }
     public static void deleteImage(String pathName,String fileName){

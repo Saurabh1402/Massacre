@@ -24,7 +24,7 @@ import java.util.Iterator;
 /**
  * Created by saurabh on 11/4/16.
  */
-public class MyApplication{
+public class MyApplication extends Application{
     public static final String SHARED_PREFERENCE_NAME="Massacre";
     public static final String USERNAME="USERNAME";
     public static final String COUNTRY_CODE="CountryCode";
