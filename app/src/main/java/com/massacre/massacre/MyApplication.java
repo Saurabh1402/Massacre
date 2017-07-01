@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Iterator;
 
 /**
@@ -104,6 +105,11 @@ public class MyApplication extends Application{
             }
         }
         return null;
+    }
+    public void setDefaultStatus(Context context){
+       // ArrayAdapter<String> arrayAdapter=new ArrayAdapter<String>();
+
+
     }
 
 }

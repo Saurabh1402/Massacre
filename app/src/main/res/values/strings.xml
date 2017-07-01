@@ -6,4 +6,7 @@
     <string name="title_activity_username">UsernameActivity</string>
     <string name="title_activity_chat">ChatActivity</string>
     <string name="last_seen">last seen</string>
+    <string name="title_activity_status">StatusActivity</string>
+    <string name="your_current_status">Your Current Status</string>
+    <string name="your_all_status_shared_preference">YOUR_ALL_STATUS_SHARED_PREFERENCE</string>
 </resources>

@@ -63,9 +63,11 @@ public class ContactActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
 
-                    ChatDbHelper chatDbHelper = new ChatDbHelper(ContactActivity.this);
-
-                    Log.e("Saurabh", chatDbHelper.deleteAllMessages() + "");
+                    Intent statusActivity=new Intent(ContactActivity.this,StatusActivity.class);
+                    startActivity(statusActivity);
+//                    ChatDbHelper chatDbHelper = new ChatDbHelper(ContactActivity.this);
+//
+//                    Log.e("Saurabh", chatDbHelper.deleteAllMessages() + "");
                 }
             });
         }

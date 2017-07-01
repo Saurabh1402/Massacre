@@ -10,4 +10,5 @@
     <color name="received_message_background">#F5C699</color>
     <color name="received_message_text_color">#6b3c0e</color>
     <color name="time_text_color">#666</color>
+    <color name="divider">#ccc</color>
 </resources>
