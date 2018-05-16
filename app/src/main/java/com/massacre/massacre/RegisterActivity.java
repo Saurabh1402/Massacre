@@ -28,9 +28,9 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         Backendless.initApp(this,
                 MyApplication.APPLICATION_SECRET_KEY_BACKENDLESS,
-                MyApplication.ANDROID_SECRET_KEY_BACKENDLESS,
-                MyApplication.APPLICATION_VERSION_BACKENDLESS
+                MyApplication.ANDROID_SECRET_KEY_BACKENDLESS
         );
+
         if(SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.REGISTERED,false)){
             //Log.e("Saurab",SaveFile.getDataFromSharedPreference(getBaseContext(),MyApplication.REGISTERED,false)+"");
 

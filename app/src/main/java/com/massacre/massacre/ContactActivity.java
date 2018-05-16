@@ -24,13 +24,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.backendless.Backendless;
-import com.backendless.async.callback.AsyncCallback;
-import com.backendless.exceptions.BackendlessFault;
-import com.backendless.messaging.*;
-import com.backendless.messaging.Message;
-import com.backendless.persistence.BackendlessDataQuery;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;

@@ -1,0 +1,41 @@
+{
+  "project_info": {
+    "project_number": "799078357418",
+    "firebase_url": "https://massacre-1295.firebaseio.com",
+    "project_id": "massacre-1295"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:799078357418:android:fbf227106e13c5cd",
+        "android_client_info": {
+          "package_name": "com.massacre.massacre"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "799078357418-itj1cbf4iki2012urij4ifb7nepqkuhg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhUT3Stg_F-Nx6TRGxMH5pzJYhblZvxn8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

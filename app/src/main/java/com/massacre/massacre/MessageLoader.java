@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.backendless.servercode.annotation.Async;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,6 +22,12 @@ public class MessageLoader extends AsyncTaskLoader<ArrayList<Message>>{
     UserProfile userProfile;
     public static final String MESSAGE_LISTENER_INTENT_FILTER_STRING ="com.massacre.MESSAGE_LISTENER";
     ArrayList<Message> cached;
+    private BroadcastReceiver messageListenerReceiver=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            forceLoad();
+        }
+    };
     public MessageLoader(Context context,UserProfile userProfile) {
         super(context);
         this.userProfile=userProfile;
@@ -105,10 +110,5 @@ public class MessageLoader extends AsyncTaskLoader<ArrayList<Message>>{
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(messageListenerReceiver);
     }
 
-    private BroadcastReceiver messageListenerReceiver=new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            forceLoad();
-        }
-    };
+
 }

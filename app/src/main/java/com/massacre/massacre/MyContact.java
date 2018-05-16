@@ -7,11 +7,13 @@ package com.massacre.massacre;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import java.io.InputStream;
@@ -25,6 +27,7 @@ public class MyContact {
     public static final String COUNTRYCODE_OF_CONTACT="countryCode";
     private Cursor getCursorContacts(Context context) {
         ContentResolver cr = context.getContentResolver();
+
         Cursor cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, Phone.DISPLAY_NAME);
         return cursor;
     }

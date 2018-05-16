@@ -71,8 +71,7 @@ public class ChatActivity extends AppCompatActivity{
             Bitmap bitmap=BitmapFactory.decodeFile(pathName+fileName);
             if(bitmap==null)
                 bitmap=BitmapFactory.decodeResource(getResources(),R.drawable.ic_account_circle_white_48dp);
-
-            circleImageView.setImageBitmap(bitmap);
+                circleImageView.setImageBitmap(bitmap);
 
         }
         setSupportActionBar(toolbar);
@@ -138,6 +137,7 @@ public class ChatActivity extends AppCompatActivity{
         recyclerView.setLayoutManager(ll);
 
         //loadMessage(chatDbHelper);
+        Bundle bundle=new Bundle();
         getSupportLoaderManager().initLoader(MESSAGE_LOADER,null,loaderCallbacks);
     }
 

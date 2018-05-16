@@ -20,7 +20,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateFormat;
 import android.util.Log;
 
-import com.backendless.messaging.PublishOptions;
 import com.google.gson.Gson;
 
 import java.util.Calendar;
